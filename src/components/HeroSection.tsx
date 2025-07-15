@@ -291,7 +291,7 @@ const HeroSection: React.FC = () => {
           {error && <div style={{ color: '#d32f2f', marginTop: 8 }}>{error}</div>}
           {isMobile && (
             <DemoVideo
-              src={require('../데모.mov')}
+              src={require('../데모.mp4')}
               autoPlay
               loop
               muted
@@ -306,7 +306,7 @@ const HeroSection: React.FC = () => {
         {!isMobile && (
           <HeroRight>
             <DemoVideo
-              src={require('../데모.mov')}
+              src={require('../데모.mp4')}
               autoPlay
               loop
               muted
