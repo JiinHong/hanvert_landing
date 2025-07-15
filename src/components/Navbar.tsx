@@ -37,6 +37,19 @@ const Logo = styled.a`
     object-fit: contain;
   }
 
+  .brand-text {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #222;
+    margin-left: 0.7rem;
+    letter-spacing: -0.03em;
+    font-family: inherit;
+    @media (max-width: 900px) {
+      font-size: 1.3rem;
+      margin-left: 0.5rem;
+    }
+  }
+
   @media (max-width: 768px) {
     img {
       height: 40px;
@@ -131,6 +144,7 @@ const Navbar: React.FC = () => {
       <NavContent>
         <Logo href="#home" onClick={(e) => handleClick(e, 'home')}>
           <img src={hanvertLogo} alt="Hanvert" />
+          <span className="brand-text">HanVert</span>
         </Logo>
 
         <MenuButton onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -147,14 +161,6 @@ const Navbar: React.FC = () => {
           <NavLink href="#pricing" onClick={(e) => handleClick(e, 'pricing')}>
             Pricing
           </NavLink>
-          <CTAButton
-            href="#join-waitlist"
-            onClick={(e) => handleClick(e, 'join-waitlist')}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Join Waitlist
-          </CTAButton>
         </NavLinks>
       </NavContent>
     </NavContainer>

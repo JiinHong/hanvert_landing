@@ -17,9 +17,13 @@ const LogoContainer = styled.div`
   padding: 0 2rem;
   max-width: 700px;
   @media (max-width: 900px) {
-    justify-content: center;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+    align-items: center;
+    gap: 0.5rem 0.5rem;
     max-width: 100%;
+    padding: 0 1rem;
   }
 `;
 
@@ -43,9 +47,10 @@ const LogoWrapper = styled(motion.div)`
   }
 
   @media (max-width: 900px) {
+    width: 100%;
     img {
-      height: 36px;
-      max-width: 80px;
+      height: 50px;
+      max-width: 100px;
     }
   }
 `;

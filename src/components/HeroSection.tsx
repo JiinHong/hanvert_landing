@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, Variants } from 'framer-motion';
 import styled from '@emotion/styled';
 import StreamingLogos from './StreamingLogos';
@@ -131,6 +131,66 @@ const DemoVideo = styled.video`
   }
 `;
 
+const FormContainer = styled(motion.form)`
+  display: flex;
+  align-items: center;
+  background: #f5f5f5;
+  border-radius: 999px;
+  padding: 0.25rem 0.5rem 0.25rem 1.5rem;
+  box-shadow: none;
+  width: 100%;
+  max-width: 480px;
+  margin: 2rem 0 2.5rem 0;
+  @media (max-width: 900px) {
+    margin: 1.5rem auto 2rem auto;
+    max-width: 80vw;
+    padding: 0.15rem 0.3rem 0.15rem 1rem;
+  }
+`;
+
+const EmailInput = styled.input`
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 1.1rem;
+  padding: 0.8rem 0;
+  outline: none;
+  color: #222;
+  border-radius: 999px;
+  &::placeholder {
+    color: #888;
+    opacity: 1;
+  }
+  @media (max-width: 900px) {
+    font-size: 1rem;
+    padding: 1rem 0;
+    &::placeholder {
+      font-size: 0.85rem;
+    }
+  }
+`;
+
+const SubscribeButton = styled.button`
+  background: #222;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.7rem 1.5rem;
+  margin-left: 0.7rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  &:hover {
+    background: #111;
+  }
+  @media (max-width: 900px) {
+    font-size: 0.95rem;
+    padding: 0.6rem 1.1rem;
+    margin-left: 0.5rem;
+  }
+`;
+
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -154,19 +214,43 @@ const itemVariants: Variants = {
   },
 };
 
+const formVariants: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }
+  }
+};
+
 const HeroSection: React.FC = () => {
   const isMobile = typeof window !== 'undefined' && window.innerWidth <= 900;
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleWaitlistClick = (e: React.MouseEvent) => {
+  const handleWaitlistSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const el = document.getElementById('join-waitlist');
-    if (el) {
-      const offset = 72; // navbar height
-      const bodyRect = document.body.getBoundingClientRect().top;
-      const elementRect = el.getBoundingClientRect().top;
-      const elementPosition = elementRect - bodyRect;
-      const offsetPosition = elementPosition - offset;
-      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+    setLoading(true);
+    setError('');
+    setSuccess(false);
+    try {
+      const res = await fetch('https://whlfxkvrmdzgscnlklmn.supabase.co/functions/v1/hanvert-email', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndobGZ4a3ZybWR6Z3NjbmxrbG1uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU5OTQwNjUsImV4cCI6MjA2MTU3MDA2NX0.R6aI0I3XLpfr7WEGuyYdwvULgt9HYszYNIx2R6P6tLI',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+      if (!res.ok) throw new Error('Failed to submit email');
+      setSuccess(true);
+      setEmail('');
+    } catch (err) {
+      setError('Submission failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -186,17 +270,28 @@ const HeroSection: React.FC = () => {
               ? 'Hanvert turns streaming into immersive Korean lessons with subtitles, dubbing, and instant vocab help.'
               : 'Transform streaming into immersive Korean learning with Hanvert—auto subtitles, dubbing, and instant vocabulary help.'}
           </Subtitle>
-          <CTAButton
-            variants={itemVariants}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleWaitlistClick}
+          <FormContainer
+            variants={formVariants}
+            initial="hidden"
+            animate="visible"
+            onSubmit={handleWaitlistSubmit}
           >
-            Join the Waitlist
-          </CTAButton>
+            <EmailInput
+              type="email"
+              placeholder={success ? "Thank you. You’re on the waitlist!" : "Your email address"}
+              required
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              disabled={loading || success}
+            />
+            <SubscribeButton type="submit" disabled={loading || success}>
+              {loading ? 'Submitting...' : 'Join waitlist'}
+            </SubscribeButton>
+          </FormContainer>
+          {error && <div style={{ color: '#d32f2f', marginTop: 8 }}>{error}</div>}
           {isMobile && (
             <DemoVideo
-              src={require('../데모.mp4')}
+              src={require('../데모.mov')}
               autoPlay
               loop
               muted
@@ -211,7 +306,7 @@ const HeroSection: React.FC = () => {
         {!isMobile && (
           <HeroRight>
             <DemoVideo
-              src={require('../데모.mp4')}
+              src={require('../데모.mov')}
               autoPlay
               loop
               muted
