@@ -291,7 +291,7 @@ function App() {
                 }}
               >
                 Stream & learn on your favorite <span style={{borderBottom:'2px solid #A3BFFA', fontWeight:600}}>OTT</span> content.<br />
-                Hanvert gives you <span style={{borderBottom:'2px solid #FFD6D6', fontWeight:600}}>step-by-step</span> Korean translations and <span style={{borderBottom:'2px solid #B6E7A0', fontWeight:600}}>key words</span> with pastel underlines.
+                Hanvert gives you <span style={{borderBottom:'2px solid #FFD6D6', fontWeight:600}}>step-by-step</span> Korean translations and <span style={{borderBottom:'2px solid #B6E7A0', fontWeight:600}}>key words</span> with underlines.
               </div>
             </HowItWorksDesc>
           </motion.div>
@@ -309,9 +309,9 @@ function App() {
                   <HighlightedPhrase
                     text="의사는 그에게 건강을 위해 자주 운동하라고 했어요."
                     highlightWords={[
-                      {word: '그에게', style: {fontWeight:600, textDecoration:'underline', textDecorationColor:'#FFD24D', textDecorationThickness:'2px', textUnderlineOffset:'4px'}},
-                      {word: '건강', style: {fontWeight:600, textDecoration:'underline', textDecorationColor:'#6C8CFF', textDecorationThickness:'2px', textUnderlineOffset:'4px'}},
-                      {word: '자주 운동', style: {fontWeight:600, textDecoration:'underline', textDecorationColor:'#6C8CFF', textDecorationThickness:'2px', textUnderlineOffset:'4px'}},
+                      {word: '의사는', style: {fontWeight:600, textDecoration:'underline', textDecorationColor:'#6C8CFF', textDecorationThickness:'2px', textUnderlineOffset:'4px'}},
+                      {word: '건강을', style: {fontWeight:600, textDecoration:'underline', textDecorationColor:'#6C8CFF', textDecorationThickness:'2px', textUnderlineOffset:'4px'}},
+                      {word: '운동하라고', style: {fontWeight:600, textDecoration:'underline', textDecorationColor:'#6C8CFF', textDecorationThickness:'2px', textUnderlineOffset:'4px'}},
                     ]}
                   />
                 </div>
@@ -322,8 +322,8 @@ function App() {
                   <HighlightedPhrase
                     text="의사는 그의 건강을 좋아지게 하려면 규칙적으로 운동해야 한다고 조언했어요."
                     highlightWords={[
-                      {word: '건강', style: {fontWeight:600, textDecoration:'underline', textDecorationColor:'#6C8CFF', textDecorationThickness:'2px', textUnderlineOffset:'4px'}},
-                      {word: '규칙적으로 운동', style: {fontWeight:600, textDecoration:'underline', textDecorationColor:'#6C8CFF', textDecorationThickness:'2px', textUnderlineOffset:'4px'}},
+                      {word: '좋아지게', style: {fontWeight:600, textDecoration:'underline', textDecorationColor:'#FFD24D', textDecorationThickness:'2px', textUnderlineOffset:'4px'}},
+                      {word: '규칙적으로', style: {fontWeight:600, textDecoration:'underline', textDecorationColor:'#FFD24D', textDecorationThickness:'2px', textUnderlineOffset:'4px'}},
                       {word: '조언했어요', style: {fontWeight:600, textDecoration:'underline', textDecorationColor:'#FFD24D', textDecorationThickness:'2px', textUnderlineOffset:'4px'}},
                     ]}
                   />
@@ -337,7 +337,8 @@ function App() {
                     highlightWords={[
                       {word: '건강', style: {fontWeight:600, textDecoration:'underline', textDecorationColor:'#6C8CFF', textDecorationThickness:'2px', textUnderlineOffset:'4px'}},
                       {word: '증진시키기', style: {fontWeight:600, textDecoration:'underline', textDecorationColor:'#5BC97A', textDecorationThickness:'2px', textUnderlineOffset:'4px'}},
-                      {word: '정기적으로 운동', style: {fontWeight:600, textDecoration:'underline', textDecorationColor:'#6C8CFF', textDecorationThickness:'2px', textUnderlineOffset:'4px'}},
+                      {word: '정기적으로', style: {fontWeight:600, textDecoration:'underline', textDecorationColor:'#5BC97A', textDecorationThickness:'2px', textUnderlineOffset:'4px'}},
+                      {word: '운동할', style: {fontWeight:600, textDecoration:'underline', textDecorationColor:'#5BC97A', textDecorationThickness:'2px', textUnderlineOffset:'4px'}},
                       {word: '권장했습니다', style: {fontWeight:600, textDecoration:'underline', textDecorationColor:'#5BC97A', textDecorationThickness:'2px', textUnderlineOffset:'4px'}},
                     ]}
                   />
@@ -345,16 +346,7 @@ function App() {
               </div>
             </HowItWorksExample>
           </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-            transition={{ duration: 0.7, delay: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-          >
-            <HowItWorksHint>
-              <span style={{fontSize: '2rem'}}>🖱️</span>
-              Click on a word to see the tooltip
-            </HowItWorksHint>
-          </motion.div>
+          <div style={{height: '2.5rem'}} />
         </HowItWorksSection>
       </div>
       <div id="features">
