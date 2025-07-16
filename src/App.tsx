@@ -448,7 +448,7 @@ function App() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-            transition={{ duration: 1.4, delay: 1.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 1.4, delay: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             <HowItWorksExample>
               <div style={{fontSize: '0.98rem', color: '#888', marginBottom: '0.5rem', letterSpacing: '-0.01em'}}>Original</div>
