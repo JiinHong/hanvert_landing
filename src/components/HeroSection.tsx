@@ -143,13 +143,14 @@ const FormContainer = styled(motion.form)`
   margin: 2rem 0 2.5rem 0;
   @media (max-width: 900px) {
     margin: 1.5rem auto 2rem auto;
-    max-width: 80vw;
-    padding: 0.15rem 0.3rem 0.15rem 1rem;
+    max-width: 95vw;
+    padding: 0.12rem 0.31rem 0.12rem 0.7rem;
   }
 `;
 
 const EmailInput = styled.input`
   flex: 1;
+  min-width: 0;
   border: none;
   background: transparent;
   font-size: 1.1rem;
@@ -181,13 +182,20 @@ const SubscribeButton = styled.button`
   margin-left: 0.7rem;
   cursor: pointer;
   transition: background 0.2s;
+  min-width: 90px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   &:hover {
     background: #111;
   }
   @media (max-width: 900px) {
     font-size: 0.95rem;
-    padding: 0.7rem 1.5rem;
+    padding: 0.7rem 1.2rem;
     margin-left: 0.5rem;
+    min-width: 90px;
+    height: 40px;
   }
 `;
 
