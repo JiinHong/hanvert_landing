@@ -186,7 +186,7 @@ const SubscribeButton = styled.button`
   }
   @media (max-width: 900px) {
     font-size: 0.95rem;
-    padding: 0.6rem 1.1rem;
+    padding: 0.7rem 1.5rem;
     margin-left: 0.5rem;
   }
 `;
