@@ -113,7 +113,7 @@ const StreamingText = styled(motion.p)`
 const DemoVideo = styled.video`
   width: 75%;
   max-width: 480px;
-  aspect-ratio: 9/16;
+  aspect-ratio: 1080/1780;
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.15);
   background: #000;
@@ -290,12 +290,23 @@ const HeroSection: React.FC = () => {
           </FormContainer>
           {error && <div style={{ color: '#d32f2f', marginTop: 8 }}>{error}</div>}
           {isMobile && (
-            <DemoVideo
+            <video
               src={require('../데모.mp4')}
               autoPlay
               loop
               muted
               playsInline
+              style={{
+                width: '100%',
+                maxWidth: 320,
+                border: '8px solid #fff',
+                borderRadius: 40,
+                boxShadow: '-12px 16px 32px 0 rgba(0,0,0,0.4)',
+                background: '#111',
+                display: 'block',
+                margin: '0 auto',
+                marginBottom: 40
+              }}
             />
           )}
           <StreamingText variants={itemVariants}>
@@ -305,12 +316,22 @@ const HeroSection: React.FC = () => {
         </HeroLeft>
         {!isMobile && (
           <HeroRight>
-            <DemoVideo
+            <video
               src={require('../데모.mp4')}
               autoPlay
               loop
               muted
               playsInline
+              style={{
+                width: '100%',
+                maxWidth: 320,
+                border: '8px solid #fff',
+                borderRadius: 40,
+                boxShadow: '-12px 16px 32px 0 rgba(0,0,0,0.4)',
+                background: '#111',
+                display: 'block',
+                margin: '0 auto'
+              }}
             />
           </HeroRight>
         )}

@@ -250,45 +250,100 @@ function App() {
   const [howItWorksRef, inView] = useInView({ threshold: 0.3, triggerOnce: false });
 
   // 비디오 변환 상태 및 자동재생, 음소거
-  const [showFirst, setShowFirst] = useState(true);
   const [muted, setMuted] = useState(true);
   const [hasInteracted, setHasInteracted] = useState(false);
-  const videoRef1 = useRef<HTMLVideoElement>(null);
-  const videoRef2 = useRef<HTMLVideoElement>(null);
+  const [isDubbed, setIsDubbed] = useState(false);
+  const [shakeTrigger, setShakeTrigger] = useState(0);
   const [videoRef, videoInView] = useInView({ threshold: 0.3, triggerOnce: false });
+  const videoDomRef = useRef<HTMLVideoElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  //1.mp3 음량 70%로 고정
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = 0.5;
+    }
+  }, []);
 
   // 자동재생: 보이는 쪽만 play
   useEffect(() => {
-    if (videoInView) {
-      if (showFirst && videoRef1.current) videoRef1.current.play();
-      if (!showFirst && videoRef2.current) videoRef2.current.play();
+    if (videoInView && videoDomRef.current) {
+      videoDomRef.current.play();
     }
-  }, [videoInView, showFirst]);
+  }, [videoInView]);
 
-  // convert 버튼: 두 비디오의 currentTime 동기화 후 전환
+  // convert 버튼: 영어 → 한국어 더빙 또는 한국어 → 영어(원래 오디오)
   const handleConvert = () => {
-    const currentTime = showFirst
-      ? videoRef1.current?.currentTime || 0
-      : videoRef2.current?.currentTime || 0;
-    if (videoRef1.current) videoRef1.current.currentTime = currentTime;
-    if (videoRef2.current) videoRef2.current.currentTime = currentTime;
-    setShowFirst(f => !f);
+    setShakeTrigger(0);
+    setTimeout(() => setShakeTrigger(1), 0);
+    if (!isDubbed) {
+      // 영어 → 한국어 더빙
+      if (videoDomRef.current && audioRef.current) {
+        audioRef.current.currentTime = videoDomRef.current.currentTime;
+        audioRef.current.play();
+        videoDomRef.current.muted = true;
+      }
+    } else {
+      // 한국어 → 영어(원래 오디오)
+      if (videoDomRef.current && audioRef.current) {
+        audioRef.current.pause();
+        videoDomRef.current.muted = false;
+      }
+    }
+    setIsDubbed(d => !d);
   };
+
+  // video play/pause/seek 시 audio도 동기화
+  useEffect(() => {
+    const v = videoDomRef.current;
+    const a = audioRef.current;
+    if (!v || !a) return;
+    const syncAudio = () => {
+      if (isDubbed) {
+        a.currentTime = v.currentTime;
+      }
+    };
+    const playAudio = () => {
+      if (isDubbed && a.paused) a.play();
+    };
+    const pauseAudio = () => {
+      if (isDubbed && !a.paused) a.pause();
+    };
+    v.addEventListener('seeked', syncAudio);
+    v.addEventListener('play', playAudio);
+    v.addEventListener('pause', pauseAudio);
+    return () => {
+      v.removeEventListener('seeked', syncAudio);
+      v.removeEventListener('play', playAudio);
+      v.removeEventListener('pause', pauseAudio);
+    };
+  }, [isDubbed]);
+
+  // muted 상태에 따라 video, audio 모두 완전 음소거 처리
+  useEffect(() => {
+    if (muted) {
+      if (videoDomRef.current) videoDomRef.current.muted = true;
+      if (audioRef.current) audioRef.current.muted = true;
+    } else {
+      if (videoDomRef.current) videoDomRef.current.muted = isDubbed ? true : false;
+      if (audioRef.current) audioRef.current.muted = false;
+    }
+  }, [muted, isDubbed]);
+
+  // 영상 더빙 데모 등장 애니메이션
+  const [dubbingRef, dubbingInView] = useInView({ threshold: 0.2, triggerOnce: true });
+
   const handleMuteToggle = () => {
     if (!hasInteracted) setHasInteracted(true);
     setMuted(m => {
       const newMuted = !m;
       // 소리 켜는 순간 play()를 명시적으로 호출
-      if (!newMuted) {
-        if (showFirst && videoRef1.current) videoRef1.current.play();
-        if (!showFirst && videoRef2.current) videoRef2.current.play();
+      if (!newMuted && videoDomRef.current) {
+        videoDomRef.current.play();
       }
       return newMuted;
     });
   };
-
-  // 영상 더빙 데모 등장 애니메이션
-  const [dubbingRef, dubbingInView] = useInView({ threshold: 0.2, triggerOnce: true });
 
   return (
     <AppContainer>
@@ -317,51 +372,35 @@ function App() {
             }}>
               Instantly switch any <b>English video</b> into <b>Korean</b> with just one click—<b>seamless dubbing</b> for effortless viewing.
             </div>
-            <motion.video
-              ref={el => { videoRef(el); videoRef1.current = el; }}
-              src="1.mp4"
-              muted={showFirst ? muted : true}
-              controls={false}
-              style={{
-                width: '100%',
-                maxWidth: window.innerWidth > 900 ? 700 : 480,
-                borderRadius: 16,
-                boxShadow: '0 4px 24px rgba(0,0,0,0.10)',
-                marginBottom: '0.3rem',
-                display: showFirst ? 'block' : 'none'
-              }}
-              autoPlay
-              loop
-              initial={{ rotate: 0 }}
-              animate={showFirst ? { rotate: [0, -2.5, 2.5, -1.5, 1.5, 0] } : { rotate: 0 }}
-              transition={{ duration: 0.55, ease: [0.4, 0.0, 0.2, 1] }}
-            />
-            <motion.video
-              ref={videoRef2}
-              src="2.mp4"
-              muted={!showFirst ? muted : true}
-              controls={false}
-              style={{
-                width: '100%',
-                maxWidth: window.innerWidth > 900 ? 700 : 480,
-                borderRadius: 16,
-                boxShadow: '0 4px 24px rgba(0,0,0,0.10)',
-                marginBottom: '0.3rem',
-                display: !showFirst ? 'block' : 'none'
-              }}
-              autoPlay
-              loop
-              initial={{ rotate: 0 }}
-              animate={!showFirst ? { rotate: [0, -2.5, 2.5, -1.5, 1.5, 0] } : { rotate: 0 }}
-              transition={{ duration: 0.55, ease: [0.4, 0.0, 0.2, 1] }}
-            />
+            {/* 영상 + 더빙 안내문구 */}
+            <div style={{ position: 'relative', width: '100%', maxWidth: window.innerWidth > 900 ? 700 : 480, aspectRatio: '16/9', margin: '0 auto 0.3rem auto' }}>
+              <motion.video
+                ref={el => { videoRef(el); videoDomRef.current = el; }}
+                src="1.mp4"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  borderRadius: 16,
+                  boxShadow: '0 4px 24px rgba(0,0,0,0.10)',
+                  background: '#000',
+                }}
+                autoPlay
+                loop
+                muted={isDubbed ? true : (!hasInteracted ? muted : false)} // 실제 음소거는 useEffect에서 제어
+                initial={{ rotate: 0 }}
+                animate={shakeTrigger === 1 ? { rotate: [0, -2.5, 2.5, -1.5, 1.5, 0] } : { rotate: 0 }}
+                transition={{ duration: 0.55, ease: [0.4, 0.0, 0.2, 1] }}
+              />
+              <audio ref={audioRef} src="1.wav" />
+            </div>
             <div
               style={{
                 width: '100%',
                 textAlign: 'center',
                 fontSize: window.innerWidth > 900 ? '1rem' : '0.9rem',
                 color: '#222',
-                opacity: 0.35,
+                opacity: 0.3,
                 fontWeight: 500,
                 letterSpacing: '-0.01em',
                 margin: window.innerWidth > 900 ? '0 0 1rem 0' : '0 0 1rem 0',
@@ -392,7 +431,7 @@ function App() {
                   style={{ width: 54, height: 54, objectFit: 'contain', display: 'block' }}
                 />
               </motion.button>
-          <button
+              <button
                 onClick={handleConvert}
                 style={{
                   background: '#6C8CFF', color: '#fff', border: 'none', borderRadius: 999,
@@ -400,7 +439,7 @@ function App() {
                   boxShadow: '0 2px 8px rgba(80,120,200,0.08)', transition: 'background 0.2s'
                 }}
               >
-                {showFirst ? 'convert to Korean' : 'back to original'}
+                {isDubbed ? 'back to original' : 'convert to Korean'}
               </button>
             </div>
           </motion.div>
