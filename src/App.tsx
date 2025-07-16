@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from '@emotion/styled';
 import HeroSection from './components/HeroSection';
 import AnimatedSection from './components/AnimatedSection';
@@ -7,6 +7,8 @@ import FloatingButton from './components/FloatingButton';
 import Navbar from './components/Navbar';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import 소리버튼 from './소리버튼.png';
+import 음소거버튼 from './음소거버튼.png';
 
 const AppContainer = styled.div`
   font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -14,7 +16,7 @@ const AppContainer = styled.div`
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  padding-top: 72px; /* Add padding for fixed navbar */
+  padding-top: 40px; /* 상단바 두께 줄임에 맞춰 조정 */
 `;
 
 const FeaturesContainer = styled.div`
@@ -247,14 +249,161 @@ function App() {
   // How it works 섹션 inView 감지
   const [howItWorksRef, inView] = useInView({ threshold: 0.3, triggerOnce: false });
 
+  // 비디오 변환 상태 및 자동재생, 음소거
+  const [showFirst, setShowFirst] = useState(true);
+  const [muted, setMuted] = useState(true);
+  const [hasInteracted, setHasInteracted] = useState(false);
+  const videoRef1 = useRef<HTMLVideoElement>(null);
+  const videoRef2 = useRef<HTMLVideoElement>(null);
+  const [videoRef, videoInView] = useInView({ threshold: 0.3, triggerOnce: false });
+
+  // 자동재생: 보이는 쪽만 play
+  useEffect(() => {
+    if (videoInView) {
+      if (showFirst && videoRef1.current) videoRef1.current.play();
+      if (!showFirst && videoRef2.current) videoRef2.current.play();
+    }
+  }, [videoInView, showFirst]);
+
+  // convert 버튼: 두 비디오의 currentTime 동기화 후 전환
+  const handleConvert = () => {
+    const currentTime = showFirst
+      ? videoRef1.current?.currentTime || 0
+      : videoRef2.current?.currentTime || 0;
+    if (videoRef1.current) videoRef1.current.currentTime = currentTime;
+    if (videoRef2.current) videoRef2.current.currentTime = currentTime;
+    setShowFirst(f => !f);
+  };
+  const handleMuteToggle = () => {
+    if (!hasInteracted) setHasInteracted(true);
+    setMuted(m => {
+      const newMuted = !m;
+      // 소리 켜는 순간 play()를 명시적으로 호출
+      if (!newMuted) {
+        if (showFirst && videoRef1.current) videoRef1.current.play();
+        if (!showFirst && videoRef2.current) videoRef2.current.play();
+      }
+      return newMuted;
+    });
+  };
+
+  // 영상 더빙 데모 등장 애니메이션
+  const [dubbingRef, dubbingInView] = useInView({ threshold: 0.2, triggerOnce: true });
+
   return (
     <AppContainer>
       <Navbar />
       <div id="home">
-        <HeroSection />
+      <HeroSection />
       </div>
       <div id="how-it-works">
         <HowItWorksSection ref={howItWorksRef}>
+          {/* 영어→한국어 더빙 데모 */}
+          <motion.div
+            ref={dubbingRef}
+            style={{ maxWidth: window.innerWidth > 900 ? 1000 : 480, margin: '0 auto 2.5rem auto', textAlign: 'center', position: 'relative' }}
+            initial={{ opacity: 0, y: 40 }}
+            animate={dubbingInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+            transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
+            <div style={{
+              fontSize: '2rem', fontWeight: 400, color: '#222', marginBottom: '2.2rem', letterSpacing: '-0.01em', textAlign: 'center',
+              marginTop: '3.96rem'
+            }}>
+              Try Live <span style={{ fontWeight: 'bold' }}>Dubbing</span> Now!
+            </div>
+            <div style={{
+              fontSize: '1.08rem', fontWeight: 400, color: '#757575', textAlign: 'center', marginBottom: '2.2rem', letterSpacing: '-0.01em'
+            }}>
+              Instantly switch any <b>English video</b> into <b>Korean</b> with just one click—<b>seamless dubbing</b> for effortless viewing.
+            </div>
+            <motion.video
+              ref={el => { videoRef(el); videoRef1.current = el; }}
+              src="1.mp4"
+              muted={showFirst ? muted : true}
+              controls={false}
+              style={{
+                width: '100%',
+                maxWidth: window.innerWidth > 900 ? 700 : 480,
+                borderRadius: 16,
+                boxShadow: '0 4px 24px rgba(0,0,0,0.10)',
+                marginBottom: '0.3rem',
+                display: showFirst ? 'block' : 'none'
+              }}
+              autoPlay
+              loop
+              initial={{ rotate: 0 }}
+              animate={showFirst ? { rotate: [0, -2.5, 2.5, -1.5, 1.5, 0] } : { rotate: 0 }}
+              transition={{ duration: 0.55, ease: [0.4, 0.0, 0.2, 1] }}
+            />
+            <motion.video
+              ref={videoRef2}
+              src="2.mp4"
+              muted={!showFirst ? muted : true}
+              controls={false}
+              style={{
+                width: '100%',
+                maxWidth: window.innerWidth > 900 ? 700 : 480,
+                borderRadius: 16,
+                boxShadow: '0 4px 24px rgba(0,0,0,0.10)',
+                marginBottom: '0.3rem',
+                display: !showFirst ? 'block' : 'none'
+              }}
+              autoPlay
+              loop
+              initial={{ rotate: 0 }}
+              animate={!showFirst ? { rotate: [0, -2.5, 2.5, -1.5, 1.5, 0] } : { rotate: 0 }}
+              transition={{ duration: 0.55, ease: [0.4, 0.0, 0.2, 1] }}
+            />
+            <div
+              style={{
+                width: '100%',
+                textAlign: 'center',
+                fontSize: window.innerWidth > 900 ? '1rem' : '0.9rem',
+                color: '#222',
+                opacity: 0.35,
+                fontWeight: 500,
+                letterSpacing: '-0.01em',
+                margin: window.innerWidth > 900 ? '0 0 1rem 0' : '0 0 1rem 0',
+                userSelect: 'none',
+                pointerEvents: 'none',
+                marginBottom: '1rem',
+              }}
+            >
+              Try real-time dubbing conversion!
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '0.8rem', marginBottom: '3.2rem' }}>
+              <motion.button
+                onClick={handleMuteToggle}
+                style={{
+                  background: 'none', border: 'none', boxShadow: 'none', padding: 0, margin: 0,
+                  cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                }}
+                animate={(!hasInteracted && muted)
+                  ? { rotate: [0, -15, 15, -10, 10, -5, 5, 0], y: [0, -10, 0, -7, 0, -4, 0, 0] }
+                  : { rotate: 0, y: 0 }
+                }
+                transition={{ duration: 0.8, repeat: (!hasInteracted && muted) ? Infinity : 0, repeatDelay: 0.8 }}
+                whileTap={{ scale: 1.2 }}
+              >
+                <img
+                  src={muted ? 음소거버튼 : 소리버튼}
+                  alt={muted ? '음소거' : '소리'}
+                  style={{ width: 54, height: 54, objectFit: 'contain', display: 'block' }}
+                />
+              </motion.button>
+          <button
+                onClick={handleConvert}
+                style={{
+                  background: '#6C8CFF', color: '#fff', border: 'none', borderRadius: 999,
+                  fontWeight: 600, fontSize: '1rem', padding: '0.56em 1.6em', cursor: 'pointer',
+                  boxShadow: '0 2px 8px rgba(80,120,200,0.08)', transition: 'background 0.2s'
+                }}
+              >
+                {showFirst ? 'convert to Korean' : 'back to original'}
+              </button>
+            </div>
+          </motion.div>
           <motion.h2
             style={{
               fontSize: '2.3rem',
@@ -267,14 +416,14 @@ function App() {
             }}
             initial={{ opacity: 0, y: -40 }}
             animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: -40 }}
-            transition={{ duration: 0.9, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 1.3, delay: 1.5, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             Watch <span style={{ fontWeight: 700, fontSize: '2.5rem' }}>it work</span> instantly!<br />
           </motion.h2>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-            transition={{ duration: 0.7, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 1.2, delay: 1.5, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             <HowItWorksDesc>
               <div
@@ -286,6 +435,7 @@ function App() {
                   lineHeight: 1.7,
                   fontWeight: 400,
                   letterSpacing: '-0.01em',
+                  color: '#757575',
                   // 모바일에서 왼쪽 정렬
                   ...(window.innerWidth <= 768 ? { textAlign: 'left' } : {})
                 }}
@@ -298,7 +448,7 @@ function App() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-            transition={{ duration: 0.7, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 1.4, delay: 1.5, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             <HowItWorksExample>
               <div style={{fontSize: '0.98rem', color: '#888', marginBottom: '0.5rem', letterSpacing: '-0.01em'}}>Original</div>
@@ -348,51 +498,7 @@ function App() {
           </motion.div>
           <div style={{height: '2.5rem'}} />
         </HowItWorksSection>
-      </div>
-      <div id="features">
-        <AnimatedSection backgroundColor="#f8f9fa">
-          <SectionTitle>Features</SectionTitle>
-          <SectionSubtitle>
-            Discover all the powerful features that make Hanvert your perfect Korean learning companion
-          </SectionSubtitle>
-          <FeaturesContainer>
-            <FeatureCard
-              icon="🎯"
-              title="Level-Based Content"
-              description="Content automatically adjusts to your proficiency level, ensuring optimal learning progress."
-              delay={0}
-            />
-            <FeatureCard
-              icon="🔍"
-              title="Smart Dictionary"
-              description="Instant access to definitions, pronunciations, and example sentences with a single tap."
-              delay={0.2}
-            />
-            <FeatureCard
-              icon="📱"
-              title="Study Tools"
-              description="Create and export flashcards, vocabulary lists, and review materials from your watched content."
-              delay={0.4}
-            />
-          </FeaturesContainer>
-        </AnimatedSection>
-      </div>
-      <div id="pricing">
-        <AnimatedSection backgroundColor="#f8f9fa">
-          <SectionTitle>Pricing</SectionTitle>
-          <SectionSubtitle>
-            Simple and transparent pricing for everyone
-          </SectionSubtitle>
-          <FeaturesContainer>
-            <FeatureCard
-              icon="🎁"
-              title="Early Access"
-              description="Join our waitlist to get special early access pricing and help shape the future of Korean learning."
-              delay={0}
-            />
-          </FeaturesContainer>
-        </AnimatedSection>
-      </div>
+        </div>
       <FloatingButton />
     </AppContainer>
   );

@@ -8,14 +8,14 @@ const NavContainer = styled.nav`
   top: 0;
   left: 0;
   right: 0;
-  padding: 1rem 2rem;
+  padding: 0.5rem 1.2rem;
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);
   z-index: 1000;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
   @media (max-width: 768px) {
-    padding: 1rem;
+    padding: 0.5rem;
   }
 `;
 
@@ -104,20 +104,6 @@ const CTAButton = styled(motion.a)`
   }
 `;
 
-const MenuButton = styled.button`
-  display: none;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  color: #333;
-
-  @media (max-width: 768px) {
-    display: block;
-  }
-`;
-
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -146,22 +132,6 @@ const Navbar: React.FC = () => {
           <img src={hanvertLogo} alt="Hanvert" />
           <span className="brand-text">HanVert</span>
         </Logo>
-
-        <MenuButton onClick={() => setIsMenuOpen(!isMenuOpen)}>
-          {isMenuOpen ? '✕' : '☰'}
-        </MenuButton>
-
-        <NavLinks isOpen={isMenuOpen}>
-          <NavLink href="#features" onClick={(e) => handleClick(e, 'features')}>
-            Features
-          </NavLink>
-          <NavLink href="#how-it-works" onClick={(e) => handleClick(e, 'how-it-works')}>
-            How It Works
-          </NavLink>
-          <NavLink href="#pricing" onClick={(e) => handleClick(e, 'pricing')}>
-            Pricing
-          </NavLink>
-        </NavLinks>
       </NavContent>
     </NavContainer>
   );

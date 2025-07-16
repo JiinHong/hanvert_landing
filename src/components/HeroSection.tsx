@@ -6,7 +6,7 @@ import StreamingLogos from './StreamingLogos';
 const useIsMobile = () => window.innerWidth <= 900;
 
 const HeroContainer = styled(motion.div)`
-  min-height: calc(100vh - 72px);
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -267,8 +267,8 @@ const HeroSection: React.FC = () => {
           </Title>
           <Subtitle variants={itemVariants}>
             {isMobile
-              ? 'Hanvert turns streaming into immersive Korean lessons with subtitles, dubbing, and instant vocab help.'
-              : 'Transform streaming into immersive Korean learning with Hanvert—auto subtitles, dubbing, and instant vocabulary help.'}
+              ? 'Transform streaming into immersive Korean learning with Hanvert—level-based subtitles, dubbing, and instant vocabulary help.'
+              : 'Transform streaming into immersive Korean learning with Hanvert—level-based subtitles, dubbing, and instant vocabulary help.'}
           </Subtitle>
           <FormContainer
             variants={formVariants}
