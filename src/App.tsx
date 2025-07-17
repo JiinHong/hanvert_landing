@@ -478,6 +478,7 @@ function App() {
               </button>
             </div>
           </motion.div>
+          {/* 
           <motion.h2
             style={{
               fontSize: '2.3rem',
@@ -570,6 +571,7 @@ function App() {
               </div>
             </HowItWorksExample>
           </motion.div>
+          */}
           <div style={{height: '2.5rem'}} />
         </HowItWorksSection>
         </div>

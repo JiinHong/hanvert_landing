@@ -294,7 +294,7 @@ const HeroSection: React.FC = () => {
               disabled={loading || success}
             />
             <SubscribeButton type="submit" disabled={loading || success}>
-              {loading ? 'Submitting...' : 'Get Early Access'}
+              {loading ? 'Submitting...' : 'Unlock the Magic'}
             </SubscribeButton>
           </FormContainer>
           {error && <div style={{ color: '#d32f2f', marginTop: 8 }}>{error}</div>}
