@@ -61,14 +61,15 @@ const HeroRight = styled.div`
 `;
 
 const Title = styled(motion.h1)`
-  font-size: 4rem;
+  font-size: 3rem;
   font-weight: 700;
   margin-bottom: 1rem;
   letter-spacing: -0.01em;
   color: white;
+  line-height: 1.2;
   
   @media (max-width: 768px) {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
   }
 `;
 
@@ -271,12 +272,12 @@ const HeroSection: React.FC = () => {
       <HeroFlex>
         <HeroLeft>
           <Title variants={itemVariants}>
-            Learn Korean While Streaming
+          Your Favorite Shows are Now Your Best Korean Lessons
           </Title>
           <Subtitle variants={itemVariants}>
             {isMobile
-              ? 'Transform streaming into immersive Korean learning with Hanvert—level-based subtitles, dubbing, and instant vocabulary help.'
-              : 'Transform streaming into immersive Korean learning with Hanvert—level-based subtitles, dubbing, and instant vocabulary help.'}
+              ? 'HanVert transforms any video into your personal, immersive textbook—complete with level-matched subtitles, AI dubbing, and interactive nuance quizzes.'
+              : 'HanVert transforms any video into your personal, immersive textbook—complete with level-matched subtitles, AI dubbing, and interactive nuance quizzes.'}
           </Subtitle>
           <FormContainer
             variants={formVariants}
@@ -286,14 +287,14 @@ const HeroSection: React.FC = () => {
           >
             <EmailInput
               type="email"
-              placeholder={success ? "Thank you. You’re on the waitlist!" : "Your email address"}
+              placeholder={success ? "Success! You're on the list for early access." : "Your email address"}
               required
               value={email}
               onChange={e => setEmail(e.target.value)}
               disabled={loading || success}
             />
             <SubscribeButton type="submit" disabled={loading || success}>
-              {loading ? 'Submitting...' : 'Join waitlist'}
+              {loading ? 'Submitting...' : 'Get Early Access'}
             </SubscribeButton>
           </FormContainer>
           {error && <div style={{ color: '#d32f2f', marginTop: 8 }}>{error}</div>}
