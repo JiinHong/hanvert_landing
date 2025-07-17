@@ -427,7 +427,7 @@ function App() {
                 animate={shakeTrigger === 1 ? { rotate: [0, -2.5, 2.5, -1.5, 1.5, 0] } : { rotate: 0 }}
                 transition={{ duration: 0.55, ease: [0.4, 0.0, 0.2, 1] }}
               />
-              <audio ref={audioRef} src="1.wav" loop preload="auto" />
+              <audio ref={audioRef} src="1.mov" loop preload="auto" />
             </div>
             <div
               style={{
