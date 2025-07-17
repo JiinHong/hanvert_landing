@@ -276,8 +276,8 @@ const HeroSection: React.FC = () => {
           </Title>
           <Subtitle variants={itemVariants}>
             {isMobile
-              ? 'HanVert transforms any video into your personal, immersive textbook—complete with level-matched subtitles, AI dubbing, and interactive nuance quizzes.'
-              : 'HanVert transforms any video into your personal, immersive textbook—complete with level-matched subtitles, AI dubbing, and interactive nuance quizzes.'}
+              ? 'Hanvert transforms any video into your personal, immersive textbook—complete with level-matched subtitles, AI dubbing, and interactive nuance quizzes.'
+              : 'Hanvert transforms any video into your personal, immersive textbook—complete with level-matched subtitles, AI dubbing, and interactive nuance quizzes.'}
           </Subtitle>
           <FormContainer
             variants={formVariants}

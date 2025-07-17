@@ -130,7 +130,7 @@ const Navbar: React.FC = () => {
       <NavContent>
         <Logo href="#home" onClick={(e) => handleClick(e, 'home')}>
           <img src={hanvertLogo} alt="Hanvert" />
-          <span className="brand-text">HanVert</span>
+          <span className="brand-text">Hanvert</span>
         </Logo>
       </NavContent>
     </NavContainer>
