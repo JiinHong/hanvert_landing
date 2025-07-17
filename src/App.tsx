@@ -280,7 +280,7 @@ function App() {
       // 영어 → 한국어 더빙
       if (videoDomRef.current && audioRef.current) {
         audioRef.current.currentTime = videoDomRef.current.currentTime;
-        audioRef.current.play();
+        audioRef.current.play().catch(e => console.log('Audio play failed:', e));
         videoDomRef.current.muted = true;
       }
     } else {
@@ -304,18 +304,53 @@ function App() {
       }
     };
     const playAudio = () => {
-      if (isDubbed && a.paused) a.play();
+      if (isDubbed && a.paused) {
+        a.currentTime = v.currentTime;
+        a.play().catch(e => console.log('Audio sync play failed:', e));
+      }
     };
     const pauseAudio = () => {
       if (isDubbed && !a.paused) a.pause();
     };
+    // 비디오가 루프될 때 오디오도 함께 동기화
+    const handleTimeUpdate = () => {
+      if (isDubbed) {
+        // 비디오가 루프되어 처음으로 돌아갔을 때
+        if (Math.abs(v.currentTime - a.currentTime) > 1) {
+          a.currentTime = v.currentTime;
+        }
+      }
+    };
+    
+    // 오디오가 끝났을 때 처리 (loop 속성이 있어도 동기화 보장)
+    const handleAudioEnded = () => {
+      if (isDubbed && !v.paused) {
+        a.currentTime = v.currentTime;
+        a.play().catch(e => console.log('Audio restart failed:', e));
+      }
+    };
+    
+    // 오디오 로드 완료 시 동기화
+    const handleAudioLoaded = () => {
+      if (isDubbed) {
+        a.currentTime = v.currentTime;
+      }
+    };
+    
     v.addEventListener('seeked', syncAudio);
     v.addEventListener('play', playAudio);
     v.addEventListener('pause', pauseAudio);
+    v.addEventListener('timeupdate', handleTimeUpdate);
+    a.addEventListener('ended', handleAudioEnded);
+    a.addEventListener('loadeddata', handleAudioLoaded);
+    
     return () => {
       v.removeEventListener('seeked', syncAudio);
       v.removeEventListener('play', playAudio);
       v.removeEventListener('pause', pauseAudio);
+      v.removeEventListener('timeupdate', handleTimeUpdate);
+      a.removeEventListener('ended', handleAudioEnded);
+      a.removeEventListener('loadeddata', handleAudioLoaded);
     };
   }, [isDubbed]);
 
@@ -392,7 +427,7 @@ function App() {
                 animate={shakeTrigger === 1 ? { rotate: [0, -2.5, 2.5, -1.5, 1.5, 0] } : { rotate: 0 }}
                 transition={{ duration: 0.55, ease: [0.4, 0.0, 0.2, 1] }}
               />
-              <audio ref={audioRef} src="1.wav" />
+              <audio ref={audioRef} src="1.wav" loop preload="auto" />
             </div>
             <div
               style={{
