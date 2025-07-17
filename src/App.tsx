@@ -469,12 +469,12 @@ function App() {
               <button
                 onClick={handleConvert}
                 style={{
-                  background: '#6C8CFF', color: '#fff', border: 'none', borderRadius: 999,
+                  background: isDubbed ? '#06d6a0' : '#6C8CFF', color: '#fff', border: 'none', borderRadius: 999,
                   fontWeight: 600, fontSize: '1rem', padding: '0.56em 1.6em', cursor: 'pointer',
                   boxShadow: '0 2px 8px rgba(80,120,200,0.08)', transition: 'background 0.2s'
                 }}
               >
-                {isDubbed ? 'back to original' : 'convert to Korean'}
+                {isDubbed ? 'Korean Dubbing On' : 'Korean Dubbing Off'}
               </button>
             </div>
           </motion.div>
