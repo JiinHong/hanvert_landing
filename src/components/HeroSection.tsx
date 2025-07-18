@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { motion, Variants } from 'framer-motion';
-import styled from '@emotion/styled';
-import StreamingLogos from './StreamingLogos';
+import React, { useState } from "react";
+import { motion, Variants } from "framer-motion";
+import styled from "@emotion/styled";
+import StreamingLogos from "./StreamingLogos";
 
 const useIsMobile = () => window.innerWidth <= 900;
 
@@ -11,7 +11,7 @@ const HeroContainer = styled(motion.div)`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(to bottom,rgb(81, 110, 255) 0%, #A98EFF 100%);
+  background: linear-gradient(to bottom, rgb(81, 110, 255) 0%, #a98eff 100%);
   color: white;
   text-align: center;
   padding: 4rem 2rem;
@@ -67,7 +67,7 @@ const Title = styled(motion.h1)`
   letter-spacing: -0.01em;
   color: white;
   line-height: 1.2;
-  
+
   @media (max-width: 768px) {
     font-size: 2.2rem;
   }
@@ -80,7 +80,7 @@ const Subtitle = styled(motion.p)`
   max-width: 800px;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.9);
-  
+
   @media (max-width: 768px) {
     font-size: 1.2rem;
   }
@@ -116,7 +116,7 @@ const DemoVideo = styled.video`
   max-width: 480px;
   aspect-ratio: 1080/1780;
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   background: #000;
   display: block;
   object-fit: contain;
@@ -128,7 +128,7 @@ const DemoVideo = styled.video`
     height: auto;
     margin: 2rem auto;
     border-radius: 24px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
   }
 `;
 
@@ -228,36 +228,40 @@ const formVariants: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }
-  }
+    transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] },
+  },
 };
 
 const HeroSection: React.FC = () => {
-  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 900;
-  const [email, setEmail] = useState('');
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= 900;
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleWaitlistSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
     setSuccess(false);
     try {
-      const res = await fetch('https://whlfxkvrmdzgscnlklmn.supabase.co/functions/v1/hanvert-email', {
-        method: 'POST',
-        headers: {
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndobGZ4a3ZybWR6Z3NjbmxrbG1uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU5OTQwNjUsImV4cCI6MjA2MTU3MDA2NX0.R6aI0I3XLpfr7WEGuyYdwvULgt9HYszYNIx2R6P6tLI',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
-      if (!res.ok) throw new Error('Failed to submit email');
+      const res = await fetch(
+        "https://whlfxkvrmdzgscnlklmn.supabase.co/functions/v1/hanvert-email",
+        {
+          method: "POST",
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndobGZ4a3ZybWR6Z3NjbmxrbG1uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU5OTQwNjUsImV4cCI6MjA2MTU3MDA2NX0.R6aI0I3XLpfr7WEGuyYdwvULgt9HYszYNIx2R6P6tLI",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
+      if (!res.ok) throw new Error("Failed to submit email");
       setSuccess(true);
-      setEmail('');
+      setEmail("");
     } catch (err) {
-      setError('Submission failed. Please try again.');
+      setError("Submission failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -272,12 +276,24 @@ const HeroSection: React.FC = () => {
       <HeroFlex>
         <HeroLeft>
           <Title variants={itemVariants}>
-          Your Favorite Shows are Now Your Best Korean Lessons
+            Korean videos.
+            <br />
+            Perfect for you?
           </Title>
           <Subtitle variants={itemVariants}>
-            {isMobile
-              ? 'Hanvert transforms any video into your personal, immersive textbook—complete with level-matched subtitles, AI dubbing, and interactive nuance quizzes.'
-              : 'Hanvert transforms any video into your personal, immersive textbook—complete with level-matched subtitles, AI dubbing, and interactive nuance quizzes.'}
+            {isMobile ? (
+              <>
+                Hanvert turns any video into your just-right Korean.
+                <br /> Get level-matched subtitles, AI dubbing, and instant
+                flashcards.
+              </>
+            ) : (
+              <>
+                Hanvert turns any video into your just-right Korean.
+                <br /> Get level-matched subtitles, AI dubbing, and instant
+                flashcards.
+              </>
+            )}
           </Subtitle>
           <FormContainer
             variants={formVariants}
@@ -287,59 +303,65 @@ const HeroSection: React.FC = () => {
           >
             <EmailInput
               type="email"
-              placeholder={success ? "Success! You're on the list for early access." : "Your email address"}
+              placeholder={
+                success
+                  ? "Success! You're on the list for early access."
+                  : "Your email address"
+              }
               required
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               disabled={loading || success}
             />
             <SubscribeButton type="submit" disabled={loading || success}>
-              {loading ? 'Submitting...' : 'Unlock the Magic'}
+              {loading ? "Submitting..." : "Unlock the Magic"}
             </SubscribeButton>
           </FormContainer>
-          {error && <div style={{ color: '#d32f2f', marginTop: 8 }}>{error}</div>}
+          {error && (
+            <div style={{ color: "#d32f2f", marginTop: 8 }}>{error}</div>
+          )}
           {isMobile && (
             <video
-              src={require('../데모.mp4')}
+              src={require("../데모.mp4")}
               autoPlay
               loop
               muted
               playsInline
               style={{
-                width: '100%',
+                width: "100%",
                 maxWidth: 320,
-                border: '8px solid #fff',
+                border: "8px solid #fff",
                 borderRadius: 40,
-                boxShadow: '-12px 16px 32px 0 rgba(0,0,0,0.4)',
-                background: '#111',
-                display: 'block',
-                margin: '0 auto',
-                marginBottom: 40
+                boxShadow: "-12px 16px 32px 0 rgba(0,0,0,0.4)",
+                background: "#111",
+                display: "block",
+                margin: "0 auto",
+                marginBottom: 40,
               }}
             />
           )}
-          <StreamingText variants={itemVariants}>
+          {/* <StreamingText variants={itemVariants}>
             Available on your favorite streaming platforms
-          </StreamingText>
-          <StreamingLogos />
+          </StreamingText> */}
+          {/* <StreamingLogos /> */}
         </HeroLeft>
         {!isMobile && (
           <HeroRight>
             <video
-              src={require('../데모.mp4')}
+              src={require("../데모.mp4")}
               autoPlay
               loop
               muted
               playsInline
               style={{
-                width: '100%',
+                width: "100%",
                 maxWidth: 320,
-                border: '8px solid #fff',
+                border: "8px solid #fff",
                 borderRadius: 40,
-                boxShadow: '-12px 16px 32px 0 rgba(0,0,0,0.4)',
-                background: '#111',
-                display: 'block',
-                margin: '0 auto'
+                boxShadow: "-12px 16px 32px 0 rgba(0,0,0,0.4)",
+                background: "#111",
+                display: "block",
+                margin: "0 auto",
               }}
             />
           </HeroRight>
