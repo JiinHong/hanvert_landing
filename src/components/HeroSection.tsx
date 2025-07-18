@@ -42,7 +42,7 @@ const HeroLeft = styled.div`
   min-width: 0;
   text-align: left;
   @media (max-width: 900px) {
-    text-align: center;
+    text-align: left;
     width: 100%;
   }
 `;
@@ -69,20 +69,53 @@ const Title = styled(motion.h1)`
   line-height: 1.2;
 
   @media (max-width: 768px) {
-    font-size: 2.2rem;
+    font-size: 1.8rem;
+    margin-bottom: 0.8rem;
   }
 `;
 
 const Subtitle = styled(motion.p)`
   font-size: 1.5rem;
   font-weight: 400;
-  margin: 0 auto 2rem;
+  margin: 0 0 1.2rem 0;
   max-width: 800px;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.9);
 
   @media (max-width: 768px) {
-    font-size: 1.2rem;
+    font-size: 1rem;
+    margin: 0 0 1rem 0;
+    line-height: 1.5;
+  }
+`;
+
+const SecondSubtitle = styled(motion.p)`
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin: 0 0 2rem 0;
+  max-width: 800px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    margin: 0 0 1.5rem 0;
+    line-height: 1.5;
+  }
+`;
+
+const MicroCopy = styled(motion.p)`
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 400;
+  text-align: left;
+  margin: 0.8rem 0 0 0;
+  max-width: 520px;
+  @media (max-width: 900px) {
+    font-size: 0.8rem;
+    margin: 0.6rem 0 0 0;
+    max-width: 95vw;
+    text-align: center;
   }
 `;
 
@@ -137,15 +170,15 @@ const FormContainer = styled(motion.form)`
   align-items: center;
   background: #f5f5f5;
   border-radius: 999px;
-  padding: 0.25rem 0.5rem 0.25rem 1.5rem;
+  padding: 0.3rem 0.3rem 0.3rem 1.5rem;
   box-shadow: none;
   width: 100%;
-  max-width: 480px;
+  max-width: 520px;
   margin: 2rem 0 2.5rem 0;
   @media (max-width: 900px) {
-    margin: 1.5rem auto 2rem auto;
+    margin: 1rem 0 1.5rem 0;
     max-width: 95vw;
-    padding: 0.12rem 0.31rem 0.12rem 0.7rem;
+    padding: 0.25rem 0.25rem 0.25rem 1rem;
   }
 `;
 
@@ -155,19 +188,19 @@ const EmailInput = styled.input`
   border: none;
   background: transparent;
   font-size: 1.1rem;
-  padding: 0.8rem 0;
+  padding: 0.9rem 0.5rem;
   outline: none;
   color: #222;
   border-radius: 999px;
   &::placeholder {
-    color: #888;
+    color: #666;
     opacity: 1;
   }
   @media (max-width: 900px) {
-    font-size: 1rem;
-    padding: 1rem 0;
+    font-size: 0.95rem;
+    padding: 0.8rem 0.3rem;
     &::placeholder {
-      font-size: 0.85rem;
+      font-size: 0.9rem;
     }
   }
 `;
@@ -179,12 +212,12 @@ const SubscribeButton = styled.button`
   border-radius: 999px;
   font-size: 1rem;
   font-weight: 500;
-  padding: 0.7rem 1.5rem;
-  margin-left: 0.7rem;
+  padding: 0.8rem 1.4rem;
+  margin-left: 0.5rem;
   cursor: pointer;
   transition: background 0.2s;
-  min-width: 90px;
-  height: 44px;
+  min-width: 120px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -192,13 +225,15 @@ const SubscribeButton = styled.button`
     background: #111;
   }
   @media (max-width: 900px) {
-    font-size: 0.95rem;
-    padding: 0.7rem 1.2rem;
-    margin-left: 0.5rem;
-    min-width: 90px;
-    height: 40px;
+    font-size: 0.9rem;
+    padding: 0.7rem 1rem;
+    margin-left: 0.3rem;
+    min-width: 100px;
+    height: 42px;
   }
 `;
+
+
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -276,25 +311,16 @@ const HeroSection: React.FC = () => {
       <HeroFlex>
         <HeroLeft>
           <Title variants={itemVariants}>
-            Korean videos.
+             The Content You Love. 
             <br />
-            Perfect for you?
+             In Korean You Can Understand.
           </Title>
           <Subtitle variants={itemVariants}>
-            {isMobile ? (
-              <>
-                Hanvert turns any video into your just-right Korean.
-                <br /> Get level-matched subtitles, AI dubbing, and instant
-                flashcards.
-              </>
-            ) : (
-              <>
-                Hanvert turns any video into your just-right Korean.
-                <br /> Get level-matched subtitles, AI dubbing, and instant
-                flashcards.
-              </>
-            )}
+            Turn any video you love into an immersive lesson with level-matched subtitles and AI dubbing.
           </Subtitle>
+          <SecondSubtitle variants={itemVariants}>
+            Learn <strong>real-world vocabulary</strong> that <strong>sticks</strong>—<strong>without the 'brute force' drills.</strong>
+          </SecondSubtitle>
           <FormContainer
             variants={formVariants}
             initial="hidden"
@@ -305,8 +331,8 @@ const HeroSection: React.FC = () => {
               type="email"
               placeholder={
                 success
-                  ? "Success! You're on the list for early access."
-                  : "Your email address"
+                  ? "🎉 You're on the list for early access!"
+                  : "your@email.com"
               }
               required
               value={email}
@@ -317,6 +343,13 @@ const HeroSection: React.FC = () => {
               {loading ? "Submitting..." : "Unlock the Magic"}
             </SubscribeButton>
           </FormContainer>
+          <MicroCopy
+            variants={itemVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            Join the waitlist and we'll notify you on launch day.
+          </MicroCopy>
           {error && (
             <div style={{ color: "#d32f2f", marginTop: 8 }}>{error}</div>
           )}
@@ -335,8 +368,7 @@ const HeroSection: React.FC = () => {
                 boxShadow: "-12px 16px 32px 0 rgba(0,0,0,0.4)",
                 background: "#111",
                 display: "block",
-                margin: "0 auto",
-                marginBottom: 40,
+                margin: "2.5rem auto 2.5rem auto",
               }}
             />
           )}
