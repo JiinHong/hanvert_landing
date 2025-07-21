@@ -343,6 +343,7 @@ const HeroSection: React.FC = () => {
           src={require("../데모.mp4")}
           style={{ display: "none" }}
           onCanPlayThrough={handleVideoCanPlayThrough}
+          poster="/poster.png"
         />
       </div>
     );
@@ -417,6 +418,7 @@ const HeroSection: React.FC = () => {
                 margin: "2.5rem auto 2.5rem auto",
               }}
               onLoadedData={undefined} // 이미 로드됨
+              poster="/poster.png"
             />
           )}
           {/* <StreamingText variants={itemVariants}>
@@ -443,6 +445,7 @@ const HeroSection: React.FC = () => {
                 margin: "0 auto",
               }}
               onLoadedData={undefined} // 이미 로드됨
+              poster="/poster.png"
             />
           </HeroRight>
         )}
