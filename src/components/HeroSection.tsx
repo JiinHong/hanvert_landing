@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { motion, Variants } from "framer-motion";
 import styled from "@emotion/styled";
 import StreamingLogos from "./StreamingLogos";
@@ -273,6 +273,12 @@ const HeroSection: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+
+  // 영상 로드 완료 시 호출
+  const handleVideoLoaded = useCallback(() => {
+    setIsVideoLoaded(true);
+  }, []);
 
   const handleWaitlistSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -301,6 +307,30 @@ const HeroSection: React.FC = () => {
       setLoading(false);
     }
   };
+
+  // 영상이 아직 로드되지 않았다면 로딩 UI만 보여줌
+  if (!isVideoLoaded) {
+    return (
+      <div style={{
+        width: "100vw",
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: 24,
+        background: "#111",
+        color: "#fff"
+      }}>
+        로딩 중...
+        {/* 영상 태그는 숨겨진 상태로 미리 렌더링해서 로드 트리거 */}
+        <video
+          src={require("../데모.mp4")}
+          style={{ display: "none" }}
+          onLoadedData={handleVideoLoaded}
+        />
+      </div>
+    );
+  }
 
   return (
     <HeroContainer
@@ -370,6 +400,7 @@ const HeroSection: React.FC = () => {
                 display: "block",
                 margin: "2.5rem auto 2.5rem auto",
               }}
+              onLoadedData={undefined} // 이미 로드됨
             />
           )}
           {/* <StreamingText variants={itemVariants}>
@@ -395,6 +426,7 @@ const HeroSection: React.FC = () => {
                 display: "block",
                 margin: "0 auto",
               }}
+              onLoadedData={undefined} // 이미 로드됨
             />
           </HeroRight>
         )}
