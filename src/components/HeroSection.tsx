@@ -233,7 +233,21 @@ const SubscribeButton = styled.button`
   }
 `;
 
+// 스피너 스타일 컴포넌트 추가
+const Spinner = styled.div`
+  border: 8px solid #eee;
+  border-top: 8px solid #4a90e2;
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 24px;
 
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -275,8 +289,8 @@ const HeroSection: React.FC = () => {
   const [error, setError] = useState("");
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
 
-  // 영상 로드 완료 시 호출
-  const handleVideoLoaded = useCallback(() => {
+  // 영상이 완전히 재생 가능할 때 호출
+  const handleVideoCanPlayThrough = useCallback(() => {
     setIsVideoLoaded(true);
   }, []);
 
@@ -315,18 +329,20 @@ const HeroSection: React.FC = () => {
         width: "100vw",
         height: "100vh",
         display: "flex",
+        flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         fontSize: 24,
         background: "#111",
         color: "#fff"
       }}>
-        로딩 중...
+        <Spinner />
+        Loading...
         {/* 영상 태그는 숨겨진 상태로 미리 렌더링해서 로드 트리거 */}
         <video
           src={require("../데모.mp4")}
           style={{ display: "none" }}
-          onLoadedData={handleVideoLoaded}
+          onCanPlayThrough={handleVideoCanPlayThrough}
         />
       </div>
     );
