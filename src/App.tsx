@@ -1,19 +1,20 @@
-import React, { useState, useRef, useEffect } from 'react';
-import styled from '@emotion/styled';
-import HeroSection from './components/HeroSection';
-import AnimatedSection from './components/AnimatedSection';
-import FeatureCard from './components/FeatureCard';
-import FloatingButton from './components/FloatingButton';
-import Navbar from './components/Navbar';
-import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
-import 소리버튼 from './소리버튼.png';
-import 음소거버튼 from './음소거버튼.png';
+import React, { useState, useRef, useEffect } from "react";
+import styled from "@emotion/styled";
+import HeroSection from "./components/HeroSection";
+import AnimatedSection from "./components/AnimatedSection";
+import FeatureCard from "./components/FeatureCard";
+import FloatingButton from "./components/FloatingButton";
+import Navbar from "./components/Navbar";
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+import 소리버튼 from "./소리버튼.png";
+import 음소거버튼 from "./음소거버튼.png";
+import { Analytics } from "@vercel/analytics/next";
 
 const AppContainer = styled.div`
-  font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   padding-top: 40px; /* 상단바 두께 줄임에 맞춰 조정 */
@@ -206,22 +207,32 @@ const HowItWorksHint = styled.div`
 
 // 하이라이트 스타일 정의
 const highlightStyle = {
-  transition: 'background 0.2s',
-  borderRadius: '6px',
-  cursor: 'pointer',
-  padding: '0 0.15em',
-  display: 'inline-block',
+  transition: "background 0.2s",
+  borderRadius: "6px",
+  cursor: "pointer",
+  padding: "0 0.15em",
+  display: "inline-block",
 };
 const highlightHoverStyle = {
-  background: '#e0eaff', // 더 진한 하이라이트
+  background: "#e0eaff", // 더 진한 하이라이트
 };
 
 // 어절별 하이라이트 컴포넌트
-function HighlightedPhrase({ text, highlightWords }: { text: string; highlightWords: {word: string; style: React.CSSProperties}[] }) {
+function HighlightedPhrase({
+  text,
+  highlightWords,
+}: {
+  text: string;
+  highlightWords: { word: string; style: React.CSSProperties }[];
+}) {
   return (
     <>
-      {text.split(' ').map((word: string, idx: number) => {
-        const highlight = highlightWords?.find((hw: {word: string; style: React.CSSProperties}) => word.replace(/[^\w가-힣]/g, '') === hw.word.replace(/[^\w가-힣]/g, ''));
+      {text.split(" ").map((word: string, idx: number) => {
+        const highlight = highlightWords?.find(
+          (hw: { word: string; style: React.CSSProperties }) =>
+            word.replace(/[^\w가-힣]/g, "") ===
+            hw.word.replace(/[^\w가-힣]/g, "")
+        );
         return (
           <span
             key={idx}
@@ -229,10 +240,10 @@ function HighlightedPhrase({ text, highlightWords }: { text: string; highlightWo
               ...highlightStyle,
               ...(highlight ? highlight.style : {}),
             }}
-            onMouseEnter={e => (e.currentTarget.style.background = '#e0eaff')}
-            onMouseLeave={e => (e.currentTarget.style.background = '')}
+            onMouseEnter={(e) => (e.currentTarget.style.background = "#e0eaff")}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "")}
           >
-            {word + (idx !== text.split(' ').length-1 ? ' ' : '')}
+            {word + (idx !== text.split(" ").length - 1 ? " " : "")}
           </span>
         );
       })}
@@ -247,14 +258,20 @@ function App() {
   };
 
   // How it works 섹션 inView 감지
-  const [howItWorksRef, inView] = useInView({ threshold: 0.3, triggerOnce: false });
+  const [howItWorksRef, inView] = useInView({
+    threshold: 0.3,
+    triggerOnce: false,
+  });
 
   // 비디오 변환 상태 및 자동재생, 음소거
   const [muted, setMuted] = useState(true);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isDubbed, setIsDubbed] = useState(false);
   const [shakeTrigger, setShakeTrigger] = useState(0);
-  const [videoRef, videoInView] = useInView({ threshold: 0.3, triggerOnce: false });
+  const [videoRef, videoInView] = useInView({
+    threshold: 0.3,
+    triggerOnce: false,
+  });
   const videoDomRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -280,7 +297,9 @@ function App() {
       // 영어 → 한국어 더빙
       if (videoDomRef.current && audioRef.current) {
         audioRef.current.currentTime = videoDomRef.current.currentTime;
-        audioRef.current.play().catch(e => console.log('Audio play failed:', e));
+        audioRef.current
+          .play()
+          .catch((e) => console.log("Audio play failed:", e));
         videoDomRef.current.muted = true;
       }
     } else {
@@ -290,7 +309,7 @@ function App() {
         videoDomRef.current.muted = false;
       }
     }
-    setIsDubbed(d => !d);
+    setIsDubbed((d) => !d);
   };
 
   // video play/pause/seek 시 audio도 동기화
@@ -306,7 +325,7 @@ function App() {
     const playAudio = () => {
       if (isDubbed && a.paused) {
         a.currentTime = v.currentTime;
-        a.play().catch(e => console.log('Audio sync play failed:', e));
+        a.play().catch((e) => console.log("Audio sync play failed:", e));
       }
     };
     const pauseAudio = () => {
@@ -321,36 +340,36 @@ function App() {
         }
       }
     };
-    
+
     // 오디오가 끝났을 때 처리 (loop 속성이 있어도 동기화 보장)
     const handleAudioEnded = () => {
       if (isDubbed && !v.paused) {
         a.currentTime = v.currentTime;
-        a.play().catch(e => console.log('Audio restart failed:', e));
+        a.play().catch((e) => console.log("Audio restart failed:", e));
       }
     };
-    
+
     // 오디오 로드 완료 시 동기화
     const handleAudioLoaded = () => {
       if (isDubbed) {
         a.currentTime = v.currentTime;
       }
     };
-    
-    v.addEventListener('seeked', syncAudio);
-    v.addEventListener('play', playAudio);
-    v.addEventListener('pause', pauseAudio);
-    v.addEventListener('timeupdate', handleTimeUpdate);
-    a.addEventListener('ended', handleAudioEnded);
-    a.addEventListener('loadeddata', handleAudioLoaded);
-    
+
+    v.addEventListener("seeked", syncAudio);
+    v.addEventListener("play", playAudio);
+    v.addEventListener("pause", pauseAudio);
+    v.addEventListener("timeupdate", handleTimeUpdate);
+    a.addEventListener("ended", handleAudioEnded);
+    a.addEventListener("loadeddata", handleAudioLoaded);
+
     return () => {
-      v.removeEventListener('seeked', syncAudio);
-      v.removeEventListener('play', playAudio);
-      v.removeEventListener('pause', pauseAudio);
-      v.removeEventListener('timeupdate', handleTimeUpdate);
-      a.removeEventListener('ended', handleAudioEnded);
-      a.removeEventListener('loadeddata', handleAudioLoaded);
+      v.removeEventListener("seeked", syncAudio);
+      v.removeEventListener("play", playAudio);
+      v.removeEventListener("pause", pauseAudio);
+      v.removeEventListener("timeupdate", handleTimeUpdate);
+      a.removeEventListener("ended", handleAudioEnded);
+      a.removeEventListener("loadeddata", handleAudioLoaded);
     };
   }, [isDubbed]);
 
@@ -360,17 +379,21 @@ function App() {
       if (videoDomRef.current) videoDomRef.current.muted = true;
       if (audioRef.current) audioRef.current.muted = true;
     } else {
-      if (videoDomRef.current) videoDomRef.current.muted = isDubbed ? true : false;
+      if (videoDomRef.current)
+        videoDomRef.current.muted = isDubbed ? true : false;
       if (audioRef.current) audioRef.current.muted = false;
     }
   }, [muted, isDubbed]);
 
   // 영상 더빙 데모 등장 애니메이션
-  const [dubbingRef, dubbingInView] = useInView({ threshold: 0.2, triggerOnce: true });
+  const [dubbingRef, dubbingInView] = useInView({
+    threshold: 0.2,
+    triggerOnce: true,
+  });
 
   const handleMuteToggle = () => {
     if (!hasInteracted) setHasInteracted(true);
-    setMuted(m => {
+    setMuted((m) => {
       const newMuted = !m;
       // 소리 켜는 순간 play()를 명시적으로 호출
       if (!newMuted && videoDomRef.current) {
@@ -384,97 +407,168 @@ function App() {
     <AppContainer>
       <Navbar />
       <div id="home">
-      <HeroSection />
+        <HeroSection />
       </div>
       <div id="how-it-works">
         <HowItWorksSection ref={howItWorksRef}>
           {/* 영어→한국어 더빙 데모 */}
           <motion.div
             ref={dubbingRef}
-            style={{ maxWidth: window.innerWidth > 900 ? 1000 : 480, margin: '0 auto 2.5rem auto', textAlign: 'center', position: 'relative' }}
+            style={{
+              maxWidth: window.innerWidth > 900 ? 1000 : 480,
+              margin: "0 auto 2.5rem auto",
+              textAlign: "center",
+              position: "relative",
+            }}
             initial={{ opacity: 0, y: 40 }}
-            animate={dubbingInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+            animate={
+              dubbingInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }
+            }
             transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
-            <div style={{
-              fontSize: '2rem', fontWeight: 400, color: '#222', marginBottom: '2.2rem', letterSpacing: '-0.01em', textAlign: 'center',
-              marginTop: '3.96rem'
-            }}>
-              Try Live <span style={{ fontWeight: 'bold' }}>Dubbing</span> Now!
+            <div
+              style={{
+                fontSize: "2rem",
+                fontWeight: 400,
+                color: "#222",
+                marginBottom: "2.2rem",
+                letterSpacing: "-0.01em",
+                textAlign: "center",
+                marginTop: "3.96rem",
+              }}
+            >
+              Try Live <span style={{ fontWeight: "bold" }}>Dubbing</span> Now!
             </div>
-            <div style={{
-              fontSize: '1.08rem', fontWeight: 400, color: '#757575', textAlign: 'center', marginBottom: '2.2rem', letterSpacing: '-0.01em'
-            }}>
-              Instantly switch any <b>English video</b> into <b>Korean</b> with just one click—<b>seamless dubbing</b> for effortless viewing.
+            <div
+              style={{
+                fontSize: "1.08rem",
+                fontWeight: 400,
+                color: "#757575",
+                textAlign: "center",
+                marginBottom: "2.2rem",
+                letterSpacing: "-0.01em",
+              }}
+            >
+              Instantly switch any <b>English video</b> into <b>Korean</b> with
+              just one click—<b>seamless dubbing</b> for effortless viewing.
             </div>
             {/* 영상 + 더빙 안내문구 */}
-            <div style={{ position: 'relative', width: '100%', maxWidth: window.innerWidth > 900 ? 700 : 480, aspectRatio: '16/9', margin: '0 auto 0.3rem auto' }}>
+            <div
+              style={{
+                position: "relative",
+                width: "100%",
+                maxWidth: window.innerWidth > 900 ? 700 : 480,
+                aspectRatio: "16/9",
+                margin: "0 auto 0.3rem auto",
+              }}
+            >
               <motion.video
-                ref={el => { videoRef(el); videoDomRef.current = el; }}
+                ref={(el) => {
+                  videoRef(el);
+                  videoDomRef.current = el;
+                }}
                 src="1.mp4"
                 style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
                   borderRadius: 16,
-                  boxShadow: '0 4px 24px rgba(0,0,0,0.10)',
-                  background: '#000',
+                  boxShadow: "0 4px 24px rgba(0,0,0,0.10)",
+                  background: "#000",
                 }}
                 autoPlay
                 loop
-                muted={isDubbed ? true : (!hasInteracted ? muted : false)} // 실제 음소거는 useEffect에서 제어
+                muted={isDubbed ? true : !hasInteracted ? muted : false} // 실제 음소거는 useEffect에서 제어
                 initial={{ rotate: 0 }}
-                animate={shakeTrigger === 1 ? { rotate: [0, -2.5, 2.5, -1.5, 1.5, 0] } : { rotate: 0 }}
+                animate={
+                  shakeTrigger === 1
+                    ? { rotate: [0, -2.5, 2.5, -1.5, 1.5, 0] }
+                    : { rotate: 0 }
+                }
                 transition={{ duration: 0.55, ease: [0.4, 0.0, 0.2, 1] }}
               />
               <audio ref={audioRef} src="1.mov" loop preload="auto" />
             </div>
             <div
               style={{
-                width: '100%',
-                textAlign: 'center',
-                fontSize: window.innerWidth > 900 ? '1rem' : '0.9rem',
-                color: '#222',
+                width: "100%",
+                textAlign: "center",
+                fontSize: window.innerWidth > 900 ? "1rem" : "0.9rem",
+                color: "#222",
                 opacity: 0.3,
                 fontWeight: 500,
-                letterSpacing: '-0.01em',
-                margin: window.innerWidth > 900 ? '0 0 1rem 0' : '0 0 1rem 0',
-                userSelect: 'none',
-                pointerEvents: 'none',
-                marginBottom: '1rem',
+                letterSpacing: "-0.01em",
+                margin: window.innerWidth > 900 ? "0 0 1rem 0" : "0 0 1rem 0",
+                userSelect: "none",
+                pointerEvents: "none",
+                marginBottom: "1rem",
               }}
             >
               Try real-time dubbing conversion!
             </div>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '0.8rem', marginBottom: '3.2rem' }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: "0.8rem",
+                marginBottom: "3.2rem",
+              }}
+            >
               <motion.button
                 onClick={handleMuteToggle}
                 style={{
-                  background: 'none', border: 'none', boxShadow: 'none', padding: 0, margin: 0,
-                  cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                  background: "none",
+                  border: "none",
+                  boxShadow: "none",
+                  padding: 0,
+                  margin: 0,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
-                animate={(!hasInteracted && muted)
-                  ? { rotate: [0, -15, 15, -10, 10, -5, 5, 0], y: [0, -10, 0, -7, 0, -4, 0, 0] }
-                  : { rotate: 0, y: 0 }
+                animate={
+                  !hasInteracted && muted
+                    ? {
+                        rotate: [0, -15, 15, -10, 10, -5, 5, 0],
+                        y: [0, -10, 0, -7, 0, -4, 0, 0],
+                      }
+                    : { rotate: 0, y: 0 }
                 }
-                transition={{ duration: 0.8, repeat: (!hasInteracted && muted) ? Infinity : 0, repeatDelay: 0.8 }}
+                transition={{
+                  duration: 0.8,
+                  repeat: !hasInteracted && muted ? Infinity : 0,
+                  repeatDelay: 0.8,
+                }}
                 whileTap={{ scale: 1.2 }}
               >
                 <img
                   src={muted ? 음소거버튼 : 소리버튼}
-                  alt={muted ? '음소거' : '소리'}
-                  style={{ width: 54, height: 54, objectFit: 'contain', display: 'block' }}
+                  alt={muted ? "음소거" : "소리"}
+                  style={{
+                    width: 54,
+                    height: 54,
+                    objectFit: "contain",
+                    display: "block",
+                  }}
                 />
               </motion.button>
               <button
                 onClick={handleConvert}
                 style={{
-                  background: isDubbed ? '#06d6a0' : '#6C8CFF', color: '#fff', border: 'none', borderRadius: 999,
-                  fontWeight: 600, fontSize: '1rem', padding: '0.56em 1.6em', cursor: 'pointer',
-                  boxShadow: '0 2px 8px rgba(80,120,200,0.08)', transition: 'background 0.2s'
+                  background: isDubbed ? "#06d6a0" : "#6C8CFF",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 999,
+                  fontWeight: 600,
+                  fontSize: "1rem",
+                  padding: "0.56em 1.6em",
+                  cursor: "pointer",
+                  boxShadow: "0 2px 8px rgba(80,120,200,0.08)",
+                  transition: "background 0.2s",
                 }}
               >
-                {isDubbed ? 'Korean Dubbing On' : 'Korean Dubbing Off'}
+                {isDubbed ? "Korean Dubbing On" : "Korean Dubbing Off"}
               </button>
             </div>
           </motion.div>
@@ -572,10 +666,11 @@ function App() {
             </HowItWorksExample>
           </motion.div>
           */}
-          <div style={{height: '2.5rem'}} />
+          <div style={{ height: "2.5rem" }} />
         </HowItWorksSection>
-        </div>
+      </div>
       <FloatingButton />
+      <Analytics />
     </AppContainer>
   );
 }
