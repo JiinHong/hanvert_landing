@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import 소리버튼 from "./소리버튼.png";
 import 음소거버튼 from "./음소거버튼.png";
-import { Analytics } from "@vercel/analytics/next";
+import { Analytics } from "@vercel/analytics/react";
 
 const AppContainer = styled.div`
   font-family: "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
